@@ -1,0 +1,33 @@
+{
+    "pred_vars": ["pride_climate_AOD", "pridec_climate_relHumidity", "kitchen_outside", 
+    "winter_season", "pride_climate_precipitation",  "pride_climate_temperatureMean", 
+    "pride_climate_propFire", "wealth_index", "pride_climate_windspeed", 
+    "pride_climate_gao", "elevation", "pride_climate_evi",
+    "reimbursement", "csb_type"],
+    "model_weights": [
+        {
+            "model" : "inla",
+            "weight": 0.36
+        },
+                {
+            "model" : "glm_nb",
+            "weight": 0.62
+        },
+                {
+            "model" : "ranger",
+            "weight": 0.39
+        },
+                {
+            "model" : "arimax",
+            "weight": 0.7
+        },
+                {
+            "model" : "naive",
+            "weight": 0.12
+        }
+    ],
+    "quantile_levels" : [0.05, 0.5, 0.95],
+    "forecast_start" : "202504",
+    "month_analysis" : 60,
+    "month_assess" : 3
+}
