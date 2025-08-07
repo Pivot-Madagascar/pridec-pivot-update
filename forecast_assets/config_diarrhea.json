@@ -1,6 +1,6 @@
 {
     "pred_vars": ["imp_latrine", "rotavirus", "wealth_index", "imp_water", "fete_nationale", 
-    "pridec_climate_precipitation", "pridec_climate_ mndwi", "stream_dist", "elevation", 
+    "pridec_climate_precipitation", "pridec_climate_mndwi", "stream_dist", "elevation", 
     "pridec_climate_temperatureMean",  "build_density"],
     "model_weights": [
         {
