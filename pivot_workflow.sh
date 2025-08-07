@@ -45,10 +45,20 @@ else
     exit 1
 fi
 
-#this is just for running tests
+#only run naive and rf models for tests
 if [[ "$2" = "test" ]]; then
     cp forecast_assets/test_config.json input/config.json
 fi
+
+#automatically update the forecast_start, unless it is a test
+if [[ "$2" = "test" ]]; then
+    forecast_start="202504"
+else
+    forecast_start=$(date -d "$(date +%Y-%m-01)" +%Y%m)
+fi
+
+jq --arg fs "$forecast_start" '.forecast_start = $fs' input/config.json > config.tmp && mv config.tmp input/config.json
+
 
 if [[ "$DISEASE_CODE" == *ADJ* ]]; then
     cp forecast_assets/external_data_fkt.csv input/external_data.csv
@@ -68,6 +78,10 @@ pridec run --env-from-file .env --rm forecast --config "input/config.json"
 #pause and wait for user to inspect report
 #I need to add something to skip this in an automated workflow in the future
 
+if [[ "$2" = "test" ]]; then 
+    echo "This is a test run and will use a dryRun POST to an instance. Rerun without the 'test' flag to POST and actually change data."
+fi
+
 echo -n "\nOpen output/forecast_report.html in a browser and inspect the output.\nDo you want to POST these forecasts to host $DHIS2_PRIDEC_URL? (y/n):"
 read -r answer
 
@@ -75,13 +89,17 @@ if [[ "$answer" == "y" ]]; then
     echo "Continuing to POST data to instance."
 elif [[ "$answer" == "n" ]]; then
     echo "Exiting..."
-    exit 0
+    return
 else
     echo "Invalid input. Please answer 'y' or 'n'."
     exit 1
 fi
 
-pridec run --env-from-file .env --env DRYRUN=false --rm post
+if [[ "$2" = "test" ]]; then
+    pridec run --env-from-file .env --env DRYRUN=true --env DISEASE_CODE="$DISEASE_CODE" --rm post
+else 
+    pridec run --env-from-file .env --env DRYRUN=false --env DISEASE_CODE="$DISEASE_CODE" --rm post
+fi
 
 pridec down --remove-orphans
 

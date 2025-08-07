@@ -46,7 +46,7 @@ Based on the DISEASE_CODE provided to `pivot_workflow.sh`, it will automatically
 
 To forecast one dataElement you can run `pivot_workflow.sh` directly. 
 
-To run a test, which will just use two simple models that take less than 10 seconds to run. This will still post to the intance if you choose to.
+To run a test, which will just use two simple models that take less than 10 seconds to run. This will not POST to the instance.
 
 ```
 . ./pivot_workflow.sh "pridec_historic_CSBMalaria" test
@@ -60,5 +60,32 @@ To run using an actual configuration file, remove the test argument:
 
 ### Forecast all nine dataElements
 
-TO DO: write a script that forecasts all nine dataElements automatically
+1. Update climate data on DHIS2 instance using `gee-pridec` python package
 
+- add link on how to install (it isn't a proper package yet)
+- running this based on .env file
+
+2. Forecast each dataElement 
+
+While this could be all put into one script, I prefer to do it one by one so that the process can be more easily monitored. They are in order of fastest to slowest model building. They should be run line by line. You can append the `test` argument if you want to test the dataElement.
+
+```
+#5-10 minutes per data source
+. ./pivot_workflow.sh "pridec_historic_CSBMalaria"
+. ./pivot_workflow.sh "pridec_historic_CSBDiarrhea"
+. ./pivot_workflow.sh "pridec_historic_CSBRespinf"
+
+
+# 10-0 minutes per data source
+. ./pivot_workflow.sh "pridec_historic_COMMalaria"
+. ./pivot_workflow.sh "pridec_historic_COMDiarrhea"
+. ./pivot_workflow.sh "pridec_historic_COMRespinf"
+
+#15-30 minutes per data source
+. ./pivot_workflow.sh "pridec_historic_ADJMalaria"
+. ./pivot_workflow.sh "pridec_historic_ADJDiarrhea"
+. ./pivot_workflow.sh "pridec_historic_ADJRespinf"
+```
+
+
+Started at 12:50
