@@ -65,27 +65,34 @@ To run using an actual configuration file, remove the test argument:
 - add link on how to install (it isn't a proper package yet)
 - running this based on .env file
 
+2. Update health data on DHIS2 instance
+
+Need to write this into a little python function/package
+
 2. Forecast each dataElement 
 
 While this could be all put into one script, I prefer to do it one by one so that the process can be more easily monitored. They are in order of fastest to slowest model building. They should be run line by line. You can append the `test` argument if you want to test the dataElement.
 
+This needs to be run in the Terminal to start the shell script:
+
 ```
-#5-10 minutes per data source
+# 3-5 minutes per data source
 . ./pivot_workflow.sh "pridec_historic_CSBMalaria"
 . ./pivot_workflow.sh "pridec_historic_CSBDiarrhea"
 . ./pivot_workflow.sh "pridec_historic_CSBRespinf"
 
 
-# 10-0 minutes per data source
+# 5-10 minutes per data source
 . ./pivot_workflow.sh "pridec_historic_COMMalaria"
 . ./pivot_workflow.sh "pridec_historic_COMDiarrhea"
 . ./pivot_workflow.sh "pridec_historic_COMRespinf"
 
-#15-30 minutes per data source
+# 10-20 minutes per data source
 . ./pivot_workflow.sh "pridec_historic_ADJMalaria"
 . ./pivot_workflow.sh "pridec_historic_ADJDiarrhea"
 . ./pivot_workflow.sh "pridec_historic_ADJRespinf"
 ```
 
+3. Run analytics to finish instance update
 
-Started at 12:50
+ADD CODE
