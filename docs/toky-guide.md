@@ -140,20 +140,20 @@ Nous faisons les prédictions pour chaque `DISEASE_CODE` individuellement. Le fl
 
 ```
 # 3-5 minutes per data source
-. ./piovt_forecast.sh "pridec_historic_CSBMalaria" test
-. ./piovt_forecast.sh "pridec_historic_CSBDiarrhea" test
-. ./piovt_forecast.sh "pridec_historic_CSBRespinf" test
+. ./pivot_forecast.sh "pridec_historic_CSBMalaria" test
+. ./pivot_forecast.sh "pridec_historic_CSBDiarrhea" test
+. ./pivot_forecast.sh "pridec_historic_CSBRespinf" test
 
 
 # 5-10 minutes per data source
-. ./piovt_forecast.sh "pridec_historic_COMMalaria" test
-. ./piovt_forecast.sh "pridec_historic_COMDiarrhea" test
-. ./piovt_forecast.sh "pridec_historic_COMRespinf" test
+. ./pivot_forecast.sh "pridec_historic_COMMalaria" test
+. ./pivot_forecast.sh "pridec_historic_COMDiarrhea" test
+. ./pivot_forecast.sh "pridec_historic_COMRespinf" test
 
 # 10-20 minutes per data source
-. ./piovt_forecast.sh "pridec_historic_ADJMalaria" test
-. ./piovt_forecast.sh "pridec_historic_ADJDiarrhea" test
-. ./piovt_forecast.sh "pridec_historic_ADJRespinf" test
+. ./pivot_forecast.sh "pridec_historic_ADJMalaria" test
+. ./pivot_forecast.sh "pridec_historic_ADJDiarrhea" test
+. ./pivot_forecast.sh "pridec_historic_ADJRespinf" test
 ```
 
 Après qu'une prédiction a été créer, le script va pauser pour te demander de revoir le report de forecast (`output/forecast_report.html`) avant d'injecter les données dans l'instance PRIDE-C. Si les forecasts sont valides, tu peux approuver l'importation avec `y`. S'il y a des erreurs dans les forecasts, tu peux rejeter l'importation avec `n`.
