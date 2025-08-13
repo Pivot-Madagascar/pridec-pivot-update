@@ -96,11 +96,9 @@ else
 fi
 
 if [[ "$2" = "test" ]]; then
-    pridec run --env-from-file .env --env DRYRUN=true --env DISEASE_CODE="$DISEASE_CODE" --rm post
+    pridec run --env-from-file .env --env DRYRUN=true --env DISEASE_CODE="$DISEASE_CODE" --rm post post.py
 else 
-    pridec run --env-from-file .env --env DRYRUN=false --env DISEASE_CODE="$DISEASE_CODE" --rm post
+    pridec run --env-from-file .env --env DRYRUN=false --env DISEASE_CODE="$DISEASE_CODE" --rm post post.py
 fi
-
-pridec down --remove-orphans
 
 echo "✅ SUCCESS: updated forecasts for $DISEASE_CODE on $DHIS2_PRIDEC_URL"
