@@ -1,4 +1,7 @@
 .env
+*/.env
+.gee-private-key.json
+*/.gee-private-key.json
 
 input/
 output/

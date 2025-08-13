@@ -27,8 +27,6 @@ PIVOT_TOKEN="your-pivot-dhis2-token"
 
 In order to use the `import-gee` service, you must also have the private key that corresponds to the `GEE_SERVICE_ACCOUNT` in the project root directory. See the [guide for creating GEE service accounts](https://developers.google.com/earth-engine/guides/service_account).
 
-
-
 ## Usage
 
 The workflow can be seperated into two steps:
