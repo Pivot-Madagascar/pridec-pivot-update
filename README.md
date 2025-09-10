@@ -99,6 +99,12 @@ The primary script used to forecast is the `pivot_forecast.sh` script. This ensu
 
 Based on the DISEASE_CODE provided to `pivot_forecast.sh`, it will automatically fetch the data and create a forecast. The CLI will then pause while you can inspect the forecast report (`output/forecast_report.html`) to ensure everything looks okay before you POST the forecasts to the DHIS2 instance.
 
+The `pivot_forecast.sh` script must be executable. This can be updated by running:
+
+```
+chmod +x pivot_forecast.sh
+```
+
 
 #### Forecast one dataElement
 
@@ -107,13 +113,13 @@ To forecast one dataElement you can run `pivot_forecast.sh` directly.
 To run a test, which will just use two simple models that take less than 10 seconds to run. This will not POST to the instance.
 
 ```
-. ./pivot_forecast.sh "pridec_historic_CSBMalaria" test
+./pivot_forecast.sh "pridec_historic_CSBMalaria" test
 ```
 
 To run using an actual configuration file, remove the test argument:
 
 ```
-. ./pivot_forecast.sh "pridec_historic_CSBMalaria"
+./pivot_forecast.sh "pridec_historic_CSBMalaria"
 ```
 
 #### Forecast all nine dataElements
@@ -124,20 +130,20 @@ This needs to be run in the Terminal to start the shell script:
 
 ```
 # 3-5 minutes per data source
-. ./pivot_forecast.sh "pridec_historic_CSBMalaria"
-. ./pivot_forecast.sh "pridec_historic_CSBDiarrhea"
-. ./pivot_forecast.sh "pridec_historic_CSBRespinf"
+./pivot_forecast.sh "pridec_historic_CSBMalaria"
+./pivot_forecast.sh "pridec_historic_CSBDiarrhea"
+./pivot_forecast.sh "pridec_historic_CSBRespinf"
 
 
 # 5-10 minutes per data source
-. ./pivot_forecast.sh "pridec_historic_COMMalaria"
-. ./pivot_forecast.sh "pridec_historic_COMDiarrhea"
-. ./pivot_forecast.sh "pridec_historic_COMRespinf"
+./pivot_forecast.sh "pridec_historic_COMMalaria"
+./pivot_forecast.sh "pridec_historic_COMDiarrhea"
+./pivot_forecast.sh "pridec_historic_COMRespinf"
 
 # 10-20 minutes per data source
-. ./pivot_forecast.sh "pridec_historic_ADJMalaria"
-. ./pivot_forecast.sh "pridec_historic_ADJDiarrhea"
-. ./pivot_forecast.sh "pridec_historic_ADJRespinf"
+./pivot_forecast.sh "pridec_historic_ADJMalaria"
+./pivot_forecast.sh "pridec_historic_ADJDiarrhea"
+./pivot_forecast.sh "pridec_historic_ADJRespinf"
 ```
 
 #### 3. Analytics Update
