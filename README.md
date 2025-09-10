@@ -10,6 +10,14 @@ The PRIDEC docker app must be installed via the automated `install.sh` script fo
 
 This currently only works on Linux systems using `bash`.
 
+The PRIDEC docker app requires Docker Compose v2 and works best when it is installed via the Docker engine and not docker desktop. You can find the official installation instructions [here](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
+
+This workflow also requires the `jq` package to update json files. It can be installed via:
+
+```
+sudo apt install jq
+```
+
 ### Set up `.env` & `.gee-private-key.json`
 
 This requires a `.env` file in the project root directory with the following structure:

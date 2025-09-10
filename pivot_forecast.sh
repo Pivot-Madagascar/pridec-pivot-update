@@ -23,6 +23,24 @@ fi
 
 DISEASE_CODE="$1"
 
+#check that jq is installed, it is not by default on some distros
+if ! command -v jq &> /dev/null; then
+    echo "Error: The 'jq' package is not installed. Please install it before continuing."
+    exit 1
+fi
+
+if  ! command -v docker compose &> /dev/null; then
+    echo "Error: Docker Compose v2 is not installed. Please install it before continuing."
+    exit 1
+fi
+
+if ! command -v pridec &> /dev/null; then
+    echo -e "Error: 'pridec' docker service not found. Please ensure it is installed and available in your PATH.\nSee instructions here: https://github.com/Pivot-Madagascar/pridec-docker"
+    exit 1
+fi
+
+
+
 #takes argument for disease code, then forecasts it, waits for validation, and posts
 
 echo "💻 Starting forecast workflow for $DISEASE_CODE on $DHIS2_PRIDEC_URL"
@@ -82,7 +100,7 @@ if [[ "$2" = "test" ]]; then
     echo "This is a test run and will use a dryRun POST to an instance. Rerun without the 'test' flag to POST and actually change data."
 fi
 
-echo -n "\nOpen output/forecast_report.html in a browser and inspect the output.\nDo you want to POST these forecasts to host $DHIS2_PRIDEC_URL? (y/n):"
+echo -e "\nOpen output/forecast_report.html in a browser and inspect the output.\nDo you want to POST these forecasts to host $DHIS2_PRIDEC_URL? (y/n):"
 read -r answer
 
 if [[ "$answer" == "y" ]]; then
