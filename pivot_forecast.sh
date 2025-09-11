@@ -107,7 +107,7 @@ if [[ "$answer" == "y" ]]; then
     echo "Continuing to POST data to instance."
 elif [[ "$answer" == "n" ]]; then
     echo "Exiting..."
-    return
+    exit 0
 else
     echo "Invalid input. Please answer 'y' or 'n'."
     exit 1
