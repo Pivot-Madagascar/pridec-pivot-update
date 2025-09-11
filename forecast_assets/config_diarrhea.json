@@ -9,7 +9,7 @@
         },
                 {
             "model" : "glm_nb",
-            "weight": 0.55
+            "weight": 0.0
         },
                 {
             "model" : "ranger",
