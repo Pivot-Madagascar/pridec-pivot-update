@@ -23,27 +23,32 @@ sudo apt install jq
 This requires a `.env` file in the project root directory with the following structure:
 
 ```
-DHIS2_PRIDEC_URL="http://44.218.51.103:8080/"
-DHIS2_TOKEN="your-pridec-dhis2-token"
-PARENT_OU="VtP4BdCeXIo"
+DHIS_URL="http://44.218.51.103:8080/"
+DHIS_TOKEN="your-pridec-dhis2-token"
 
+PARENT_OU="VtP4BdCeXIo"
+OU_LEVEL='6'
+
+GEE_PROJECT='your-gee-project'
 GEE_SERVICE_ACCOUNT='your-service-account@project.iam.gserviceaccount.com'
 
 PIVOT_URL="https://www.dhis2-pivot.org/prod/"
 PIVOT_TOKEN="your-pivot-dhis2-token"
 ```
 
-In order to use the `import-gee` service, you must also have the private key that corresponds to the `GEE_SERVICE_ACCOUNT` in the project root directory. See the [guide for creating GEE service accounts](https://developers.google.com/earth-engine/guides/service_account).
+In order to use the `import_gee` service, you must also have the private key that corresponds to the `GEE_SERVICE_ACCOUNT` in the project root directory. See the [guide for creating GEE service accounts](https://developers.google.com/earth-engine/guides/service_account).
+
+You can optionally set `LOG_LEVEL=DEBUG` to debug the workflow.
 
 ## Usage
 
-The workflow can be seperated into two steps:
+The workflow can be seperated into three steps:
 
 1. Importation of data into PRIDE-C instance [once per month, before forecasting]
 2. Creation of forecasts and importation into PRIDE-C instance [one for each dataElement]
-3. Launching of Analytics Table and update of dataStore key [once per month, after forecasting]
+3. Update of tangential PRIDE-C items [once per month, after forecasting]
 
-The first and third step only needs to be done once per month, while the forecast creation step needs to be done for each our nine dataElements that we predict over. The dataElements that we predict are:
+The first and third step only needs to be done once per month, while the forecast creation step needs to be done for each of our nine dataElements that we predict over. The dataElements that we predict are:
 
 | DISEASE_CODE                | Name                                             |
 |-----------------------------|--------------------------------------------------|
@@ -69,16 +74,15 @@ This step imports health data from Pivot's DHIS2 instance into the PRIDE-C insta
 This imports 10 environmental variables from GEE into the PRIDE-C DHIS2 instance. While most indicators are quite quick (<1 minute), the Sen-1 flooding incidcator can take between 30-45 minutes.
 
 ```
-pridec run --env-from-file .env --env DRYRUN="true" --rm import-gee
-```
+pridec run --env-from-file .env --env DRYRUN="true" --rm etl import_gee
 
 **Import historical health data**
 
 We also import historical health data from the Pivot DHIS2 instance into the PRIDE-C instance to create the dataElements that we want to forecast. This includes some formatting and aggregation of multiple dataElement to create each `pridec_historic_` dataElement. It needs to be run twice, once for the community case data (`COMcases`) and once for the CSB-level case data (`CSBcases`).
 
 ```
-pridec run --env-from-file .env --env DRYRUN=true --rm import-pivot-data COMcases.py
-pridec run --env-from-file .env --env DRYRUN=true --rm import-pivot-data CSBcases.py
+pridec run --env-from-file .env --env DRYRUN="false" --rm etl import_pivot_com
+pridec run --env-from-file .env --env DRYRUN="false" --rm etl import_pivot_csb
 ```
 
 **Launch Analytics Table**
@@ -124,7 +128,7 @@ To run using an actual configuration file, remove the test argument:
 
 #### Forecast all nine dataElements
 
-I prefer to forecsat each dataElement one by one so that the process can be more easily monitored. They are in order of fastest to slowest model building. They should be run line by line. You can append the `test` argument if you want to test the dataElement.
+I prefer to forecast each dataElement one by one so that the process can be more easily monitored. They are in order of fastest to slowest model building. They should be run line by line. You can append the `test` argument if you want to test the dataElement.
 
 This needs to be run in the Terminal to start the shell script:
 
@@ -148,9 +152,11 @@ This needs to be run in the Terminal to start the shell script:
 
 #### 3. Analytics Update
 
-Once all forecasts have been created and POSTed to the instance, the Analytics Tables can be built one more time and the pridec dataStore update key updated. This is needed to signal to the app that the forecasts have been updated and that user's cache should be refreshed.
+Once all forecasts have been created and POSTed to the instance, the Analytics Tables can be built one more time, CSBs on alert calculated, and the pridec dataStore update key updated. This is needed to signal to the app that the forecasts have been updated and that user's cache should be refreshed.
 
 ```
-pridec run --env-from-file .env --env DRYRUN=true --rm post analytics.py
-pridec run --env-from-file .env --env DRYRUN=true --rm post dataStoreKey.py
+pridec run --env-from-file .env --env DRYRUN="false" --rm etl build_analytics #wait 15 minutes
+pridec run --env-from-file .env --env DRYRUN="false" --rm etl calc_CSB_alerts
+pridec run --env-from-file .env --env DRYRUN="false" --rm etl build_analytics #wait 15 minutes
+pridec run --env-from-file .env --env DRYRUN="false" --rm etl update_key
 ```

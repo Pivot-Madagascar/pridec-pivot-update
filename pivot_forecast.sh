@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #to run:
 # . pivot_workflow.sh <your-disease-code>
@@ -43,7 +44,7 @@ fi
 
 #takes argument for disease code, then forecasts it, waits for validation, and posts
 
-echo "💻 Starting forecast workflow for $DISEASE_CODE on $DHIS2_PRIDEC_URL"
+echo "Starting forecast workflow for $DISEASE_CODE on $DHIS_URL"
 
 
 #------------copy over needed files-----------------------#
@@ -70,7 +71,7 @@ fi
 
 #automatically update the forecast_start, unless it is a test
 if [[ "$2" = "test" ]]; then
-    forecast_start="202504"
+    forecast_start="202601"
 else
     forecast_start=$(date -d "$(date +%Y-%m-01)" +%Y%m)
 fi
@@ -80,18 +81,25 @@ jq --arg fs "$forecast_start" '.forecast_start = $fs' input/config.json > config
 
 if [[ "$DISEASE_CODE" == *ADJ* ]]; then
     cp forecast_assets/external_data_fkt.csv input/external_data.csv
+    OU_LEVEL="6"
 elif [[ "$DISEASE_CODE" == *COM* ]]; then
     cp forecast_assets/external_data_fkt.csv input/external_data.csv
+    OU_LEVEL="6"
 elif [[ "$DISEASE_CODE" == *CSB* ]]; then
     cp forecast_assets/external_data_csb.csv input/external_data.csv
+    OU_LEVEL="5"
 else
     echo "Unknown data source: $DISEASE_CODE"
     exit 1
 fi
 
 #-------start docker workflow---------------------#
-pridec run --env-from-file .env --env DISEASE_CODE="$DISEASE_CODE" --rm fetch
-pridec run --env-from-file .env --rm forecast --config "input/config.json"
+ENV_ARGS=(--env-from-file .env --env DISEASE_CODE="$DISEASE_CODE" --env OU_LEVEL="$OU_LEVEL")
+
+pridec run "${ENV_ARGS[@]}" --rm etl fetch_disease
+pridec run "${ENV_ARGS[@]}" --rm etl fetch_climate
+pridec run "${ENV_ARGS[@]}" --rm etl fetch_geojson
+pridec run "${ENV_ARGS[@]}" --rm forecast
 
 #pause and wait for user to inspect report
 #I need to add something to skip this in an automated workflow in the future
@@ -114,9 +122,9 @@ else
 fi
 
 if [[ "$2" = "test" ]]; then
-    pridec run --env-from-file .env --env DRYRUN=true --env DISEASE_CODE="$DISEASE_CODE" --rm post post.py
+    pridec run --env-from-file .env --env DRYRUN=true --rm etl post_forecast
 else 
-    pridec run --env-from-file .env --env DRYRUN=false --env DISEASE_CODE="$DISEASE_CODE" --rm post post.py
+    pridec run --env-from-file .env --env DRYRUN=false ---rm etl post_forecast
 fi
 
-echo "✅ SUCCESS: updated forecasts for $DISEASE_CODE on $DHIS2_PRIDEC_URL"
+echo "SUCCESS: updated forecasts for $DISEASE_CODE on $DHIS_URL"
