@@ -74,15 +74,16 @@ This step imports health data from Pivot's DHIS2 instance into the PRIDE-C insta
 This imports 10 environmental variables from GEE into the PRIDE-C DHIS2 instance. While most indicators are quite quick (<1 minute), the Sen-1 flooding incidcator can take between 30-45 minutes.
 
 ```
-pridec run --env-from-file .env --env DRYRUN="true" --rm etl import_gee
+pridec etl import_gee
+```
 
 **Import historical health data**
 
 We also import historical health data from the Pivot DHIS2 instance into the PRIDE-C instance to create the dataElements that we want to forecast. This includes some formatting and aggregation of multiple dataElement to create each `pridec_historic_` dataElement. It needs to be run twice, once for the community case data (`COMcases`) and once for the CSB-level case data (`CSBcases`).
 
 ```
-pridec run --env-from-file .env --env DRYRUN="false" --rm etl import_pivot_com
-pridec run --env-from-file .env --env DRYRUN="false" --rm etl import_pivot_csb
+pridec etl import_pivot_com
+pridec etl import_pivot_csb
 ```
 
 **Launch Analytics Table**
@@ -90,7 +91,7 @@ pridec run --env-from-file .env --env DRYRUN="false" --rm etl import_pivot_csb
 In order for this new data to be accessible via the `analytics` endpoint, the Analytics Table must be rebuilt. 
 
 ```
-pridec run --env-from-file .env --env DRYRUN=true --rm post analytics.py
+pridec etl build_analytics
 ```
 
 This will take ~15 minutes. You can check the progress by going to the URL mentioned in the output. This step can also be done manually via the DHIS2 user interface.
@@ -155,8 +156,8 @@ This needs to be run in the Terminal to start the shell script:
 Once all forecasts have been created and POSTed to the instance, the Analytics Tables can be built one more time, CSBs on alert calculated, and the pridec dataStore update key updated. This is needed to signal to the app that the forecasts have been updated and that user's cache should be refreshed.
 
 ```
-pridec run --env-from-file .env --env DRYRUN="false" --rm etl build_analytics #wait 15 minutes
-pridec run --env-from-file .env --env DRYRUN="false" --rm etl calc_CSB_alerts
-pridec run --env-from-file .env --env DRYRUN="false" --rm etl build_analytics #wait 15 minutes
-pridec run --env-from-file .env --env DRYRUN="false" --rm etl update_key
+pridec etl build_analytics #wait 15 minutes
+pridec etl calc_CSB_alerts
+pridec etl build_analytics #wait 15 minutes
+pridec etl update_key
 ```

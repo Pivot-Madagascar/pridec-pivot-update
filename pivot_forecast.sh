@@ -94,12 +94,12 @@ else
 fi
 
 #-------start docker workflow---------------------#
-ENV_ARGS=(--env-from-file .env --env DISEASE_CODE="$DISEASE_CODE" --env OU_LEVEL="$OU_LEVEL")
+ENV_ARGS=(-e DISEASE_CODE="$DISEASE_CODE" -e OU_LEVEL="$OU_LEVEL")
 
-pridec run "${ENV_ARGS[@]}" --rm etl fetch_disease
-pridec run "${ENV_ARGS[@]}" --rm etl fetch_climate
-pridec run "${ENV_ARGS[@]}" --rm etl fetch_geojson
-pridec run "${ENV_ARGS[@]}" --rm forecast
+pridec etl fetch_disease "${ENV_ARGS[@]}"
+pridec etl fetch_climate "${ENV_ARGS[@]}"
+pridec etl fetch_geojson "${ENV_ARGS[@]}"
+pridec forecast "${ENV_ARGS[@]}"
 
 #pause and wait for user to inspect report
 #I need to add something to skip this in an automated workflow in the future
@@ -122,9 +122,9 @@ else
 fi
 
 if [[ "$2" = "test" ]]; then
-    pridec run --env-from-file .env --env DRYRUN=true --rm etl post_forecast
+    pridec etl post_forecast -e DRYRUN=true
 else 
-    pridec run --env-from-file .env --env DRYRUN=false ---rm etl post_forecast
+    pridec etl post_forecast -e DRYRUN=false
 fi
 
 echo "SUCCESS: updated forecasts for $DISEASE_CODE on $DHIS_URL"

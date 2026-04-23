@@ -1,6 +1,8 @@
 # Comment faire des mise à jours PRIDE-C
 ### Mise à jour: 13 Aout 2025
 
+# PAS ENCORE A JOUR AVEC LE NOUVEAU WORKFLOW
+
 ## Pre-requis
 
 - [docker compose](https://docs.docker.com/compose/install/)
