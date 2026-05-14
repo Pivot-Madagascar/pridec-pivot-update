@@ -1,8 +1,6 @@
 # Comment faire des mise à jours PRIDE-C
 ### Mise à jour: 14 Mai 2026
 
-# PAS ENCORE A JOUR AVEC LE NOUVEAU WORKFLOW
-
 ## Pre-requis
 
 - pridec-docker installé sur le serveur à Ranomafana avec l'installation automatique (voir [ici](https://docs.google.com/document/d/1DAk7sy8jt8oDqzWNBD6TDdCRDpk3PkgdMzk1qVI9je0/edit?usp=sharing))
