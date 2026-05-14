@@ -11,8 +11,8 @@ set -e
 
 # copy all of the forecast_assets over to here first, keeping them in the forecast_assets/ directory
 # you need a .env file at root with:
-# DHIS2_PRIDEC_URL="http://localhost:8082/"
-# DHIS2_TOKEN="d2pat_odhYW86O8auDuQ73u4r3HElEJxMFQziM3326734980"
+# DHIS_URL="http://localhost:8082/"
+# DHIS_TOKEN="d2pat_odhYW86O8auDuQ73u4r3HElEJxMFQziM3326734980"
 # PARENT_OU="VtP4BdCeXIo"
 
 source .env

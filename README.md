@@ -62,7 +62,7 @@ The first and third step only needs to be done once per month, while the forecas
 | pridec_historic_COMDiarrhea | PRIDEC : HISTORIC COM Reported Cases  - Diarrhea |
 | pridec_historic_COMRespinf  | PRIDEC : HISTORIC COM Reported Cases  - Resp Inf |
 
-Each step corresponds to a docker `service`. They all have the capability of running in `DRYRUN` mode for testing purposes. In the code below, `DRYRUN` is always set to `true`. Once you are sure everything works, you can set `DRYRUN=false` to actually import data into the instance.
+Each step corresponds to a docker `service`. They all have the capability of running in `DRYRUN` mode for testing purposes. 
 
 ### 1. Importation step
 
@@ -71,15 +71,15 @@ This step imports health data from Pivot's DHIS2 instance into the PRIDE-C insta
 
 **Import GEE Climate data**
 
-This imports 10 environmental variables from GEE into the PRIDE-C DHIS2 instance. While most indicators are quite quick (<1 minute), the Sen-1 flooding incidcator can take between 30-45 minutes.
+This imports 10 environmental variables from GEE into the PRIDE-C DHIS2 instance. While most indicators are quite quick (<1 minute), the Sen-1 flooding incidcator can take between 30-45 minutes. The example below is in DRYRUN=True mode. You can change it to DRYRUN='False' to actually import data into an instance.
 
 ```
-pridec etl import_gee
+pridec etl import_gee -e DRYRUN='True'
 ```
 
 **Import historical health data**
 
-We also import historical health data from the Pivot DHIS2 instance into the PRIDE-C instance to create the dataElements that we want to forecast. This includes some formatting and aggregation of multiple dataElement to create each `pridec_historic_` dataElement. It needs to be run twice, once for the community case data (`COMcases`) and once for the CSB-level case data (`CSBcases`).
+We also import historical health data from the Pivot DHIS2 instance into the PRIDE-C instance to create the dataElements that we want to forecast. This includes some formatting and aggregation of multiple dataElement to create each `pridec_historic_` dataElement. It needs to be run twice, once for the community case data (`import_pivot_com`) and once for the CSB-level case data (`import_pivot_csb`).
 
 ```
 pridec etl import_pivot_com
@@ -88,7 +88,7 @@ pridec etl import_pivot_csb
 
 **Launch Analytics Table**
 
-In order for this new data to be accessible via the `analytics` endpoint, the Analytics Table must be rebuilt. 
+In order for this new data to be accessible via the `analytics` endpoint, the Analytics Table must be rebuilt. This does not run with a DRYRUN option.
 
 ```
 pridec etl build_analytics
@@ -101,7 +101,6 @@ This will take ~15 minutes. You can check the progress by going to the URL menti
 
 The primary script used to forecast is the `pivot_forecast.sh` script. This ensures the correct configuration and data is used for each dataElement. It is simply looped over the 9 dataElements that we forecast on the Pivot PRIDE-C instance.
 
-
 Based on the DISEASE_CODE provided to `pivot_forecast.sh`, it will automatically fetch the data and create a forecast. The CLI will then pause while you can inspect the forecast report (`output/forecast_report.html`) to ensure everything looks okay before you POST the forecasts to the DHIS2 instance.
 
 The `pivot_forecast.sh` script must be executable. This can be updated by running:
@@ -109,7 +108,6 @@ The `pivot_forecast.sh` script must be executable. This can be updated by runnin
 ```
 chmod +x pivot_forecast.sh
 ```
-
 
 #### Forecast one dataElement
 
@@ -156,8 +154,8 @@ This needs to be run in the Terminal to start the shell script:
 Once all forecasts have been created and POSTed to the instance, the Analytics Tables can be built one more time, CSBs on alert calculated, and the pridec dataStore update key updated. This is needed to signal to the app that the forecasts have been updated and that user's cache should be refreshed.
 
 ```
-pridec etl build_analytics #wait 15 minutes
+pridec etl build_analytics #wait 10 minutes
 pridec etl calc_CSB_alerts
-pridec etl build_analytics #wait 15 minutes
+pridec etl build_analytics #wait 10 minutes
 pridec etl update_key
 ```
