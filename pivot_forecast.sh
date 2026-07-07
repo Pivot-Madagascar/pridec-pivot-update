@@ -99,7 +99,8 @@ ENV_ARGS=(-e DISEASE_CODE="$DISEASE_CODE" -e OU_LEVEL="$OU_LEVEL")
 pridec etl fetch_disease "${ENV_ARGS[@]}"
 pridec etl fetch_climate "${ENV_ARGS[@]}"
 pridec etl fetch_geojson "${ENV_ARGS[@]}"
-pridec forecast "${ENV_ARGS[@]}"
+pridec etl validate_inputs "${ENV_ARGS[@]}"
+pridec forecast forecast "${ENV_ARGS[@]}"
 
 #pause and wait for user to inspect report
 #I need to add something to skip this in an automated workflow in the future

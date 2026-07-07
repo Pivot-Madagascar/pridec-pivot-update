@@ -159,3 +159,7 @@ pridec etl calc_CSB_alerts
 pridec etl build_analytics #wait 10 minutes
 pridec etl update_key
 ```
+
+## Send an email update to all users
+
+After updating, you can send an email update to all users. This is still in the works in the pivot_dhis_tools library
