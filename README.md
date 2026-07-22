@@ -101,7 +101,7 @@ This will take ~15 minutes. You can check the progress by going to the URL menti
 
 The primary script used to forecast is the `pivot_forecast.sh` script. This ensures the correct configuration and data is used for each dataElement. It is simply looped over the 9 dataElements that we forecast on the Pivot PRIDE-C instance.
 
-Based on the DISEASE_CODE provided to `pivot_forecast.sh`, it will automatically fetch the data and create a forecast. The CLI will then pause while you can inspect the forecast report (`output/forecast_report.html`) to ensure everything looks okay before you POST the forecasts to the DHIS2 instance.
+Based on the DISEASE_CODE provided to `pivot_forecast.sh`, it will automatically fetch the data and create a forecast and calculate alerts, if needed. The CLI will then pause while you can inspect the forecast report (`output/forecast_report.html`) to ensure everything looks okay before you POST the forecasts to the DHIS2 instance.
 
 The `pivot_forecast.sh` script must be executable. This can be updated by running:
 
@@ -151,11 +151,9 @@ This needs to be run in the Terminal to start the shell script:
 
 #### 3. Analytics Update
 
-Once all forecasts have been created and POSTed to the instance, the Analytics Tables can be built one more time, CSBs on alert calculated, and the pridec dataStore update key updated. This is needed to signal to the app that the forecasts have been updated and that user's cache should be refreshed.
+Once all forecasts have been created and POSTed to the instance, the Analytics Tables can be built one more time and the pridec dataStore update key updated. This is needed to signal to the app that the forecasts have been updated and that user's cache should be refreshed.
 
 ```
-pridec etl build_analytics #wait 10 minutes
-pridec etl calc_CSB_alerts
 pridec etl build_analytics #wait 10 minutes
 pridec etl update_key
 ```

@@ -119,8 +119,6 @@ Pour finaliser la mise à jour, tu dois build encore les tableaux d'analytiques 
 
 ```
 pridec etl build_analytics #wait 10 minutes
-pridec etl calc_CSB_alerts
-pridec etl build_analytics #wait 10 minutes
 pridec etl update_key
 ```
 

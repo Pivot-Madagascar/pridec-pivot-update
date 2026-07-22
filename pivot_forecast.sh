@@ -102,6 +102,20 @@ pridec etl fetch_geojson "${ENV_ARGS[@]}"
 pridec etl validate_inputs "${ENV_ARGS[@]}"
 pridec forecast forecast "${ENV_ARGS[@]}"
 
+#create alert forecasts for CSBs only
+if [[ "$DISEASE_CODE" == *CSB* ]]; then
+
+    if [[ "$DISEASE_CODE" == *Malaria ]]; then
+        ALERT_NAME="CSBMalariaVigilance"
+    elif [[ "$DISEASE_CODE" == *Diarrhea ]]; then
+        ALERT_NAME="CSBDiarrheaVigilance"
+    elif [[ "$DISEASE_CODE" == *Respinf ]]; then
+        ALERT_NAME="CSBRespinfVigilance"
+    fi
+
+    pridec etl calc_orgUnit_alerts -e DISEASE_CODE="$DISEASE_CODE" -e OU_LEVEL="$OU_LEVEL" -e ALERT_NAME="$ALERT_NAME"
+fi
+
 #pause and wait for user to inspect report
 #I need to add something to skip this in an automated workflow in the future
 
@@ -109,7 +123,7 @@ if [[ "$2" = "test" ]]; then
     echo "This is a test run and will use a dryRun POST to an instance. Rerun without the 'test' flag to POST and actually change data."
 fi
 
-echo -e "\nOpen output/forecast_report.html in a browser and inspect the output.\nDo you want to POST these forecasts to host $DHIS2_PRIDEC_URL? (y/n):"
+echo -e "\nOpen output/forecast_report.html in a browser and inspect the output.\nDo you want to POST these forecasts to DHIS2 instance $DHIS_URL? (y/n):"
 read -r answer
 
 if [[ "$answer" == "y" ]]; then
@@ -121,6 +135,8 @@ else
     echo "Invalid input. Please answer 'y' or 'n'."
     exit 1
 fi
+
+
 
 if [[ "$2" = "test" ]]; then
     pridec etl post_forecast -e DRYRUN=true
